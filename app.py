@@ -4,13 +4,17 @@ os.environ["STREAMLIT_WATCHER_TYPE"] = "none"
 import streamlit as st
 import pandas as pd
 import numpy as np
+import gdown
+
 
 # Load enriched dataset
 @st.cache_data
 def load_data():
     file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
     url = f"https://drive.google.com/uc?id={file_id}"
-    df = pd.read_csv(url)
+    output = "beer_data.csv"
+    gdown.download(url, output, quiet=False)
+    df = pd.read_csv(output)
     df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
     return df
 
