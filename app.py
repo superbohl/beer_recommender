@@ -7,7 +7,6 @@ import numpy as np
 import gdown
 
 # Load enriched dataset
-@st.cache_data
 def load_data():
     file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
     url = f"https://drive.google.com/uc?id={file_id}"
