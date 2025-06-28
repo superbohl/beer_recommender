@@ -8,7 +8,9 @@ import numpy as np
 # Load enriched dataset
 @st.cache_data
 def load_data():
-    df = pd.read_csv("https://drive.google.com/file/d/1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V/view?usp=sharing")
+    file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    df = pd.read_csv(url)
     df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
     return df
 
