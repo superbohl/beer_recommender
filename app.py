@@ -12,7 +12,7 @@ import gdown
 def load_data():
     file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
     url = f"https://drive.google.com/uc?id={file_id}"
-    output = "beer_data.csv"
+    output = "beer_reviews_enriched.csv"
     gdown.download(url, output, quiet=False)
     df = pd.read_csv(output)
     df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
