@@ -81,12 +81,11 @@ if filtered.empty:
     st.warning("No beers match your ABV filter. Try expanding the range.")
     st.stop()
 
-# Prepare trait columns
 for trait in traits:
     if trait not in filtered.columns:
-        filtered[trait] = 0.0
+        filtered.loc[:, trait] = 0.0
     else:
-        filtered[trait] = filtered[trait].fillna(0.0)
+        filtered.loc[:, trait] = filtered[trait].fillna(0.0)
 
 # Score beers
 def score_beer(row, user_prefs):
