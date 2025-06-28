@@ -14,7 +14,6 @@ def load_data():
     output = "beer_reviews_enriched.csv"
     gdown.download(url, output, quiet=False)
     df = pd.read_csv(output)
-    df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
     return df
 
 df = load_data()
