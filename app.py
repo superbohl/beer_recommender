@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import gdown
 
-
 # Load enriched dataset
 @st.cache_data
 def load_data():
@@ -70,25 +69,31 @@ for trait, weight in experience_map[experience_q].items():
 for trait, weight in secondary_map[second_q].items():
     user_pref_vector[trait] += weight
 
-# Normalize
+# Normalize trait weights
 max_val = max(user_pref_vector.values()) or 1
 user_pref_vector = {k: round(v / max_val, 2) for k, v in user_pref_vector.items()}
 
 # ABV filter
 abv_range = st.slider("Select your preferred ABV range:", 0.0, 15.0, (4.0, 8.0), 0.1)
-filtered = df[df["beer_abv"].between(*abv_range)]
+filtered = df[df["beer_abv"].between(*abv_range)].copy()
+
+# Exit early if no beers match the filter
+if filtered.empty:
+    st.warning("No beers match your ABV filter. Try expanding the range.")
+    st.stop()
+
+# Prepare trait columns
+for trait in traits:
+    if trait not in filtered.columns:
+        filtered[trait] = 0.0
+    else:
+        filtered[trait] = filtered[trait].fillna(0.0)
 
 # Score beers
 def score_beer(row, user_prefs):
     beer_vector = np.array([row[t] for t in traits])
     user_vector = np.array([user_prefs[t] for t in traits])
     return np.dot(beer_vector, user_vector)
-
-for trait in traits:
-    if trait not in filtered.columns:
-        filtered[trait] = 0.0
-    else:
-        filtered.loc[:, trait] = filtered[trait].fillna(0.0)
 
 filtered["match_score"] = filtered.apply(score_beer, axis=1, user_prefs=user_pref_vector)
 
@@ -106,3 +111,4 @@ if top_matches.empty:
     st.warning("No beers match your preferences. Try adjusting your answers or ABV range.")
 else:
     st.dataframe(top_matches)
+
