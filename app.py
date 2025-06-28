@@ -88,7 +88,7 @@ for trait in traits:
     if trait not in filtered.columns:
         filtered[trait] = 0.0
     else:
-        filtered[trait] = filtered[trait].fillna(0.0)    
+        filtered.loc[:, trait] = filtered[trait].fillna(0.0)
 
 filtered["match_score"] = filtered.apply(score_beer, axis=1, user_prefs=user_pref_vector)
 
