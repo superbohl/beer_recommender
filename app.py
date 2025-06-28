@@ -6,19 +6,27 @@ import pandas as pd
 import numpy as np
 import gdown
 
-# Load enriched dataset
 def load_data():
     if "beer_df" not in st.session_state:
         file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
         url = f"https://drive.google.com/uc?id={file_id}"
-        output = "beer_reviews_enriched.csv"
+        output = "/tmp/beer_reviews_enriched.csv"  # safer path for cloud
 
+        # Download only if it doesn't exist
         if not os.path.exists(output):
-            gdown.download(url, output, quiet=False)
+            try:
+                gdown.download(url, output, quiet=False)
+            except Exception as e:
+                st.error(f"Failed to download data: {e}")
+                return pd.DataFrame()
 
-        df = pd.read_csv(output)
-        df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
-        st.session_state.beer_df = df
+        try:
+            df = pd.read_csv(output)
+            df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
+            st.session_state.beer_df = df
+        except Exception as e:
+            st.error(f"Failed to load data: {e}")
+            return pd.DataFrame()
 
     return st.session_state.beer_df
 
