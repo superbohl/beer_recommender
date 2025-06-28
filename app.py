@@ -84,6 +84,12 @@ def score_beer(row, user_prefs):
     user_vector = np.array([user_prefs[t] for t in traits])
     return np.dot(beer_vector, user_vector)
 
+for trait in traits:
+    if trait not in filtered.columns:
+        filtered[trait] = 0.0
+    else:
+        filtered[trait] = filtered[trait].fillna(0.0)    
+
 filtered["match_score"] = filtered.apply(score_beer, axis=1, user_prefs=user_pref_vector)
 
 # Top matches
