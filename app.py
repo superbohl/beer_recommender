@@ -8,12 +8,19 @@ import gdown
 
 # Load enriched dataset
 def load_data():
-    file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
-    url = f"https://drive.google.com/uc?id={file_id}"
-    output = "beer_reviews_enriched.csv"
-    gdown.download(url, output, quiet=False)
-    df = pd.read_csv(output)
-    return df
+    if "beer_df" not in st.session_state:
+        file_id = "1qWIC8AamOlGmdLAXZqJenYB1WGBgUV2V"
+        url = f"https://drive.google.com/uc?id={file_id}"
+        output = "beer_reviews_enriched.csv"
+
+        if not os.path.exists(output):
+            gdown.download(url, output, quiet=False)
+
+        df = pd.read_csv(output)
+        df = df.dropna(subset=["beer_style", "beer_abv", "review_overall"])
+        st.session_state.beer_df = df
+
+    return st.session_state.beer_df
 
 df = load_data()
 
